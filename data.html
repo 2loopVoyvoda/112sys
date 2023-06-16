@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Данни за легла</title>
+  <style>
+    /* CSS styling for the user interface */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+    .form-container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .form-group button {
+      display: block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .form-group button:hover {
+      background-color: #45a049;
+    }
+    .back-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 10px 20px;
+      background-color: #ff6f6f;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .back-button:hover {
+      background-color: #ff5252;
+    }
+    .search-results {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .search-results li {
+      list-style-type: none;
+      cursor: pointer;
+      padding: 5px;
+    }
+    .search-results li:hover {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <h1>Данни за легла</h1>
+
+  <div class="form-container">
+    <div class="form-group">
+      <label for="hospitalSearch">Търсене на болница:</label>
+      <input type="text" id="hospitalSearch" placeholder="Въведете име на болница">
+      <ul class="search-results" id="searchResults"></ul>
+    </div>
+    <div class="form-group">
+      <label for="freeBeds">Брой свободни легла:</label>
+      <input type="number" id="freeBeds" min="0">
+    </div>
+    <div class="form-group">
+      <button onclick="updateBeds()">Коригирай данните</button>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    const options = [
+      "УМБАЛ „Царица Йоанна-ИСУЛ“ ЕАД",
+      "УМБАЛСМ „Н. И. Пирогов“ ЕАД",
+      "УМБАЛ „Александровска“ ЕАД",
+      "МБАЛ „НКБ“ ЕАД",
+      "МБАЛНП „Св. Наум“ ЕАД",
+      "УМБАЛ „Софиямед“ ЕАД",
+      "МБАЛ „Токуда болница“",
+      "ВМА - МБАЛ София"
+    ];
+
+    $(document).ready(function() {
+      const hospitalSearch = document.getElementById("hospitalSearch");
+      const searchResults = document.getElementById("searchResults");
+
+      hospitalSearch.addEventListener("input", function() {
+        const searchText = hospitalSearch.value.trim().toLowerCase();
+        const filteredOptions = options.filter(function(option) {
+          return option.toLowerCase().includes(searchText);
+        });
+        if (searchText === "") {
+          searchResults.style.display = "none";
+        } else {
+          populateResults(filteredOptions);
+          searchResults.style.display = "block";
+        }
+      });
+
+      searchResults.addEventListener("click", function(event) {
+        if (event.target.tagName === "LI") {
+          const selectedHospital = event.target.textContent;
+          hospitalSearch.value = selectedHospital;
+          searchResults.style.display = "none";
+        }
+      });
+    });
+
+    function populateResults(results) {
+      const searchResults = document.getElementById("searchResults");
+      searchResults.innerHTML = "";
+      results.forEach(function(result) {
+        const li = document.createElement("li");
+        li.textContent = result;
+        searchResults.appendChild(li);
+      });
+    }
+
+    function updateBeds() {
+      var hospitalName = $('#hospitalSearch').val();
+      var freeBeds = $('#freeBeds').val();
+
+      if (hospitalName && freeBeds) {
+        // Perform the update operation using an AJAX request or other method
+        // Here, you can write your code to update the "beds.html" file with the new data
+
+        // Example AJAX request (replace with your own logic)
+        $.ajax({
+          url: 'update_beds.php',
+          method: 'POST',
+          data: { hospitalName: hospitalName, freeBeds: freeBeds },
+          success: function(response) {
+            alert('Data updated successfully!');
+            // Redirect to the "beds.html" page or perform any other necessary action
+          },
+          error: function(xhr, status, error) {
+            alert('An error occurred while updating data.');
+            console.log(error);
+          }
+        });
+      } else {
+        alert('Please select a hospital and enter the number of free beds.');
+      }
+    }
+  </script>
+  <button class="back-button" onclick="window.location.href='portal.html'">Back</button>
+</body>
+</html>

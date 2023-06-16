@@ -52,6 +52,21 @@
     .available-beds-green {
       background-color: #90ee90;
     }
+    .back-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 10px 20px;
+      background-color: #ff6f6f;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .back-button:hover {
+      background-color: #ff5252;
+    }
   </style>
   <script>
     // JavaScript function to filter hospitals with available beds
@@ -98,32 +113,49 @@
     </thead>
     <tbody>
       <tr>
-        <td>Александровска болница</td>
-        <td>Център на София-град</td>
+        <td>УМБАЛ „Царица Йоанна-ИСУЛ“ ЕАД</td>
+        <td>София</td>
         <td>5</td>
       </tr>
       <tr>
-        <td>УМБАЛСМП Пирогов</td>
-        <td>Център на София-град</td>
+        <td>УМБАЛСМ „Н. И. Пирогов“ ЕАД</td>
+        <td>София</td>
         <td>1</td>
       </tr>
       <tr>
-        <td>УМБАЛСМ Св. Анна</td>
-        <td>София-запад</td>
+        <td>УМБАЛ „Александровска“ ЕАД</td>
+        <td>София</td>
         <td>50</td>
       </tr>
       <tr>
-        <td>Болница Лозенец</td>
-        <td>София-запад</td>
+        <td>МБАЛ „НКБ“ ЕАД</td>
+        <td>София</td>
         <td>30</td>
       </tr>
       <tr>
-        <td>Болница Токуда</td>
-        <td>София-изток</td>
-        <td>80</td>
+        <td>МБАЛНП „Св. Наум“ ЕАД</td>
+        <td>София</td>
+        <td>8</td>
+      </tr>
+	  <tr>
+        <td>УМБАЛ „Софиямед“ ЕАД</td>
+        <td>София</td>
+        <td>9</td>
+      </tr>
+	  <tr>
+        <td>МБАЛ „Токуда болница“</td>
+        <td>София</td>
+        <td>67</td>
+      </tr>
+	  <tr>
+        <td>ВМА - МБАЛ София</td>
+        <td>София</td>
+        <td>23</td>
       </tr>
       <!-- Add more rows for other hospitals and their data -->
     </tbody>
   </table>
+
+  <button class="back-button" onclick="window.location.href='portal.html'">Back</button>
 </body>
 </html>
