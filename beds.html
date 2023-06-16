@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Свободни спешни легла</title>
+  <style>
+    /* CSS styling for the user interface */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    .filter-button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .filter-button:hover {
+      background-color: #45a049;
+    }
+    .available-beds-red {
+      background-color: #ff6f6f;
+    }
+    .available-beds-yellow {
+      background-color: #ffd700;
+    }
+    .available-beds-green {
+      background-color: #90ee90;
+    }
+  </style>
+  <script>
+    // JavaScript function to filter hospitals with available beds
+    function filterHospitals() {
+      var table = document.getElementById('hospital-table');
+      var rows = Array.from(table.rows).slice(1);
+      rows.sort(function(a, b) {
+        var aBeds = parseInt(a.cells[2].innerText);
+        var bBeds = parseInt(b.cells[2].innerText);
+        return bBeds - aBeds;
+      });
+      rows.forEach(function(row, index) {
+        table.appendChild(row);
+        applyColorCoding(row, index);
+      });
+    }
+
+    // JavaScript function to apply color coding based on available beds
+    function applyColorCoding(row, index) {
+      var availableBeds = parseInt(row.cells[2].innerText);
+      row.classList.remove('available-beds-red', 'available-beds-yellow', 'available-beds-green');
+      if (availableBeds > 10) {
+        row.classList.add('available-beds-green');
+      } else if (availableBeds > 5) {
+        row.classList.add('available-beds-yellow');
+      } else if (availableBeds > 0) {
+        row.classList.add('available-beds-red');
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Свободни спешни легла</h1>
+  
+  <button class="filter-button" onclick="filterHospitals()">Покажи само свободни спешни легла</button>
+  
+  <table id="hospital-table">
+    <thead>
+      <tr>
+        <th>Болница</th>
+        <th>Локация</th>
+        <th>Свободни легла</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Александровска болница</td>
+        <td>Център на София-град</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>УМБАЛСМП Пирогов</td>
+        <td>Център на София-град</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>УМБАЛСМ Св. Анна</td>
+        <td>София-запад</td>
+        <td>50</td>
+      </tr>
+      <tr>
+        <td>Болница Лозенец</td>
+        <td>София-запад</td>
+        <td>30</td>
+      </tr>
+      <tr>
+        <td>Болница Токуда</td>
+        <td>София-изток</td>
+        <td>80</td>
+      </tr>
+      <!-- Add more rows for other hospitals and their data -->
+    </tbody>
+  </table>
+</body>
+</html>

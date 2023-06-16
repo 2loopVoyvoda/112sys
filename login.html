@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Page</title>
+  <script>
+    function login() {
+      var username = document.getElementById('username').value;
+      var password = document.getElementById('password').value;
+      
+      // Check if the provided credentials match
+      if (username === 'admin' && password === 'admin') {
+        alert('Login successful!');
+        // Redirect to the portal.html page
+        window.location.href = 'portal.html';
+      } else {
+        alert('Invalid username or password. Please try again.');
+      }
+    }
+  </script>
+</head>
+<body>
+  <h2>Login Page</h2>
+  
+  <form>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br><br>
+    
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+    
+    <input type="button" value="Login" onclick="login()">
+  </form>
+</body>
+</html>

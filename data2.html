@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Data Corrections</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#correctionForm').on('submit', function(e) {
+        e.preventDefault();
+        var correction = $('#correction').val().trim();
+        var hospitalName = $('#hospitalName').val().trim();
+
+        // Send the correction and hospital name to the server-side script
+        $.ajax({
+          url: 'update_beds.php',
+          method: 'POST',
+          data: { correction: correction, hospitalName: hospitalName },
+          success: function(response) {
+            // Handle the response from the server (e.g., show a success message)
+            alert('Data updated successfully!');
+          },
+          error: function() {
+            // Handle any errors that occurred during the AJAX request
+            alert('An error occurred while updating the data.');
+          }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>Data Corrections</h2>
+    
+    <form id="correctionForm">
+      <label for="hospitalName">Hospital Name:</label>
+      <input type="text" id="hospitalName" name="hospitalName" required>
+      <label for="correction">Correction:</label>
+      <input type="text" id="correction" name="correction" required>
+      <input type="submit" value="Apply Correction">
+    </form>
+  </div>
+</body>
+</html>
