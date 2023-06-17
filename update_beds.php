@@ -1,40 +1,23 @@
 <?php
-// Check if the request method is POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  // Get the correction and hospital name from the POST data
-  $correction = $_POST['correction'];
+  // Get the hospital name and number of free beds from the AJAX request
   $hospitalName = $_POST['hospitalName'];
+  $freeBeds = $_POST['freeBeds'];
 
-  // Load the contents of the "beds.html" file
-  $bedsFile = 'beds.html';
-  $bedsContent = file_get_contents($bedsFile);
+  // Read the "beds.html" file contents
+  $bedsContent = file_get_contents('beds.html');
 
-  // Find the position of the hospital name in the file
-  $startPos = strpos($bedsContent, $hospitalName);
+  // Find the specific hospital row and update the number of free beds
+  // Here, you can use regular expressions, string manipulation, or HTML parsing libraries to achieve this
+  // For simplicity, let's assume the hospital names are unique and already present in the table
 
-  if ($startPos !== false) {
-    // Find the position of the closing </td> tag after the hospital name
-    $endPos = strpos($bedsContent, '</td>', $startPos);
+  // Example using regular expressions
+  $pattern = "/<tr>\s*<td>$hospitalName<\/td>\s*<td>[^<]*<\/td>\s*<td>[^<]*<\/td>\s*<\/tr>/";
+  $replacement = "<tr>\n<td>$hospitalName<\/td>\n<td>[location]</td>\n<td>$freeBeds<\/td>\n<\/tr>";
+  $updatedContent = preg_replace($pattern, $replacement, $bedsContent);
 
-    if ($endPos !== false) {
-      // Update the content between the start and end positions with the correction
-      $updatedContent = substr_replace($bedsContent, $correction, $startPos, $endPos - $startPos);
+  // Save the updated content back to the "beds.html" file
+  file_put_contents('beds.html', $updatedContent);
 
-      // Write the updated content back to the "beds.html" file
-      file_put_contents($bedsFile, $updatedContent);
-
-      // Return a success response
-      echo 'success';
-    } else {
-      // Return an error response if the closing </td> tag is not found
-      echo 'error: closing </td> tag not found';
-    }
-  } else {
-    // Return an error response if the hospital name is not found
-    echo 'error: hospital name not found';
-  }
-} else {
-  // Return an error response if the request method is not POST
-  echo 'error: invalid request method';
-}
+  // Send a response to indicate the success of the update
+  echo 'success';
 ?>

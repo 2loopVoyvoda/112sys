@@ -151,33 +151,24 @@
       });
     }
 
-    function updateBeds() {
-      var hospitalName = $('#hospitalSearch').val();
-      var freeBeds = $('#freeBeds').val();
+function updateBeds() {
+  var hospitalName = $('#hospitalSearch').val();
+  var freeBeds = $('#freeBeds').val();
 
-      if (hospitalName && freeBeds) {
-        // Perform the update operation using an AJAX request or other method
-        // Here, you can write your code to update the "beds.html" file with the new data
+  if (hospitalName && freeBeds) {
+    // Construct the URL with parameters
+    var url = 'beds.html?hospital=' + encodeURIComponent(hospitalName) + '&beds=' + encodeURIComponent(freeBeds);
 
-        // Example AJAX request (replace with your own logic)
-        $.ajax({
-          url: 'update_beds.php',
-          method: 'POST',
-          data: { hospitalName: hospitalName, freeBeds: freeBeds },
-          success: function(response) {
-            alert('Data updated successfully!');
-            // Redirect to the "beds.html" page or perform any other necessary action
-          },
-          error: function(xhr, status, error) {
-            alert('An error occurred while updating data.');
-            console.log(error);
-          }
-        });
-      } else {
-        alert('Please select a hospital and enter the number of free beds.');
-      }
-    }
+    // Redirect to the "beds.html" page with the updated data
+    window.location.href = url;
+  } else {
+    alert('Please select a hospital and enter the number of free beds.');
+  }
+}
+
   </script>
   <button class="back-button" onclick="window.location.href='portal.html'">Back</button>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </body>
 </html>

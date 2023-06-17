@@ -69,13 +69,12 @@
     }
   </style>
   <script>
-    // JavaScript function to filter hospitals with available beds
-    function filterHospitals() {
+  function filterHospitals() {
       var table = document.getElementById('hospital-table');
       var rows = Array.from(table.rows).slice(1);
       rows.sort(function(a, b) {
-        var aBeds = parseInt(a.cells[2].innerText);
-        var bBeds = parseInt(b.cells[2].innerText);
+        var aBeds = parseInt(a.cells[1].innerText);
+        var bBeds = parseInt(b.cells[1].innerText);
         return bBeds - aBeds;
       });
       rows.forEach(function(row, index) {
@@ -83,79 +82,99 @@
         applyColorCoding(row, index);
       });
     }
+    // JavaScript function to retrieve URL parameters
+    function getParameterByName(name) {
+      name = name.replace(/[\[\]]/g, '\\$&');
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+          results = regex.exec(window.location.href);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
+    // JavaScript function to update hospital data based on URL parameters
+    function updateHospitalData() {
+      var hospitalName = getParameterByName('hospital');
+      var freeBeds = getParameterByName('beds');
+
+      if (hospitalName && freeBeds) {
+        var table = document.getElementById('hospital-table');
+        var rows = table.getElementsByTagName('tr');
+        for (var i = 0; i < rows.length; i++) {
+          var cells = rows[i].getElementsByTagName('td');
+          if (cells.length > 0 && cells[0].innerText === hospitalName) {
+            cells[1].innerText = freeBeds;
+            applyColorCoding(rows[i], i);
+            break;
+          }
+        }
+      }
+    }
 
     // JavaScript function to apply color coding based on available beds
     function applyColorCoding(row, index) {
-      var availableBeds = parseInt(row.cells[2].innerText);
-      row.classList.remove('available-beds-red', 'available-beds-yellow', 'available-beds-green');
-      if (availableBeds > 10) {
-        row.classList.add('available-beds-green');
-      } else if (availableBeds > 5) {
-        row.classList.add('available-beds-yellow');
-      } else if (availableBeds > 0) {
+      var freeBeds = parseInt(row.cells[1].innerText);
+      if (freeBeds <= 0) {
         row.classList.add('available-beds-red');
+      } else if (freeBeds <= 5) {
+        row.classList.add('available-beds-yellow');
+      } else {
+        row.classList.add('available-beds-green');
       }
     }
+
+    // JavaScript function to go back to the previous page
+    function goBack() {
+      window.history.back();
+    }
+
+    // Call the updateHospitalData function on page load
+    window.addEventListener('load', updateHospitalData);
   </script>
 </head>
 <body>
   <h1>Свободни спешни легла</h1>
-  
-  <button class="filter-button" onclick="filterHospitals()">Покажи само свободни спешни легла</button>
-  
+    <button class="filter-button" onclick="filterHospitals()">Покажи само свободни спешни легла</button>
+  <button class="back-button" onclick="goBack()">Обратно</button>
   <table id="hospital-table">
-    <thead>
-      <tr>
-        <th>Болница</th>
-        <th>Локация</th>
-        <th>Свободни легла</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>УМБАЛ „Царица Йоанна-ИСУЛ“ ЕАД</td>
-        <td>София</td>
-        <td>5</td>
-      </tr>
-      <tr>
-        <td>УМБАЛСМ „Н. И. Пирогов“ ЕАД</td>
-        <td>София</td>
-        <td>1</td>
-      </tr>
-      <tr>
-        <td>УМБАЛ „Александровска“ ЕАД</td>
-        <td>София</td>
-        <td>50</td>
-      </tr>
-      <tr>
-        <td>МБАЛ „НКБ“ ЕАД</td>
-        <td>София</td>
-        <td>30</td>
-      </tr>
-      <tr>
-        <td>МБАЛНП „Св. Наум“ ЕАД</td>
-        <td>София</td>
-        <td>8</td>
-      </tr>
-	  <tr>
-        <td>УМБАЛ „Софиямед“ ЕАД</td>
-        <td>София</td>
-        <td>9</td>
-      </tr>
-	  <tr>
-        <td>МБАЛ „Токуда болница“</td>
-        <td>София</td>
-        <td>67</td>
-      </tr>
-	  <tr>
-        <td>ВМА - МБАЛ София</td>
-        <td>София</td>
-        <td>23</td>
-      </tr>
-      <!-- Add more rows for other hospitals and their data -->
-    </tbody>
+    <tr>
+      <th>Болница</th>
+      <th>Свободни легла</th>
+    </tr>
+    <tr>
+      <td>УМБАЛ „Царица Йоанна-ИСУЛ“ ЕАД</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>УМБАЛСМ „Н. И. Пирогов“ ЕАД</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>УМБАЛ „Александровска“ ЕАД</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>МБАЛ „НКБ“ ЕАД</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>МБАЛНП „Св. Наум“ ЕАД</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>УМБАЛ „Софиямед“ ЕАД</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>МБАЛ „Токуда болница“</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>ВМА - МБАЛ София</td>
+      <td>6</td>
+    </tr>
   </table>
-
-  <button class="back-button" onclick="window.location.href='portal.html'">Back</button>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </body>
 </html>
