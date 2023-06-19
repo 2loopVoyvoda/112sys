@@ -4,56 +4,102 @@
   <title>Свободни спешни легла</title>
   <style>
     /* CSS styling for the user interface */
-    /* ... CSS styles ... */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    .filter-button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .filter-button:hover {
+      background-color: #45a049;
+    }
+    .available-beds-red {
+      background-color: #ff6f6f;
+    }
+    .available-beds-yellow {
+      background-color: #ffd700;
+    }
+    .available-beds-green {
+      background-color: #90ee90;
+    }
+    .back-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 10px 20px;
+      background-color: #ff6f6f;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .back-button:hover {
+      background-color: #ff5252;
+    }
   </style>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script>
-	const firebaseConfig = {
-  apiKey: "AIzaSyDFXUT28pG0KiXcHrXHpnFTNfikeml1oZ8",
-  authDomain: "sys112.firebaseapp.com",
-  databaseURL: "https://sys112-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "sys112",
-  storageBucket: "sys112.appspot.com",
-  messagingSenderId: "386925628090",
-  appId: "1:386925628090:web:cbbd384b46d55ad6b95083",
-};
-
-    // Initialize Firebase
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
+    // JavaScript function to retrieve URL parameters
+    function getParameterByName(name) {
+      name = name.replace(/[\[\]]/g, '\\$&');
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+          results = regex.exec(window.location.href);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
     }
 
-    // Function to update hospital data based on Firebase values
+    // JavaScript function to update hospital data based on URL parameters
     function updateHospitalData() {
-      var table = document.getElementById('hospital-table');
-      var dbRef = firebase.database().ref('hospitals');
+      var hospitalName = getParameterByName('hospital');
+      var freeBeds = getParameterByName('beds');
 
-      dbRef.on('value', function(snapshot) {
-        var hospitals = snapshot.val();
-        table.innerHTML = `
-          <tr>
-            <th>Болница</th>
-            <th>Свободни легла</th>
-          </tr>
-        `;
-        for (var key in hospitals) {
-          if (hospitals.hasOwnProperty(key)) {
-            var hospital = hospitals[key];
-            var row = document.createElement('tr');
-            row.innerHTML = `
-              <td>${hospital.name}</td>
-              <td>${hospital.beds}</td>
-            `;
-            applyColorCoding(row);
-            table.appendChild(row);
+      if (hospitalName && freeBeds) {
+        var table = document.getElementById('hospital-table');
+        var rows = table.getElementsByTagName('tr');
+        for (var i = 0; i < rows.length; i++) {
+          var cells = rows[i].getElementsByTagName('td');
+          if (cells.length > 0 && cells[0].innerText === hospitalName) {
+            cells[1].innerText = freeBeds;
+            applyColorCoding(rows[i], i);
+            break;
           }
         }
-      });
+      }
     }
 
     // JavaScript function to apply color coding based on available beds
-    function applyColorCoding(row) {
+    function applyColorCoding(row, index) {
       var freeBeds = parseInt(row.cells[1].innerText);
       if (freeBeds <= 0) {
         row.classList.add('available-beds-red');
@@ -64,12 +110,56 @@
       }
     }
 
+    // JavaScript function to go back to the previous page
+    function goBack() {
+      window.history.back();
+    }
+
     // Call the updateHospitalData function on page load
     window.addEventListener('load', updateHospitalData);
   </script>
 </head>
 <body>
   <h1>Свободни спешни легла</h1>
-  <table id="hospital-table"></table>
+  <button class="filter-button" onclick="filterHospitals()">Покажи само свободни спешни легла</button>
+  <button class="back-button" onclick="goBack()">Обратно</button>
+  <table id="hospital-table">
+    <tr>
+      <th>Болница</th>
+      <th>Свободни легла</th>
+    </tr>
+    <tr>
+      <td>УМБАЛ „Царица Йоанна-ИСУЛ“ ЕАД</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>УМБАЛСМ „Н. И. Пирогов“ ЕАД</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>УМБАЛ „Александровска“ ЕАД</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>МБАЛ „НКБ“ ЕАД</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>МБАЛНП „Св. Наум“ ЕАД</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>УМБАЛ „Софиямед“ ЕАД</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>МБАЛ „Токуда болница“</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>ВМА - МБАЛ София</td>
+      <td>6</td>
+    </tr>
+  </table>
 </body>
 </html>
