@@ -1,10 +1,11 @@
-var firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
+const firebaseConfig = {
+  apiKey: "AIzaSyDFXUT28pG0KiXcHrXHpnFTNfikeml1oZ8",
+  authDomain: "sys112.firebaseapp.com",
+  databaseURL: "https://sys112-default-rtdb.europe-west1.firebasedatabase.app/",
+  projectId: "sys112",
+  storageBucket: "sys112.appspot.com",
+  messagingSenderId: "<your-messaging-sender-id>",
+  appId: "1:386925628090:web:cbbd384b46d55ad6b95083",
 };
 
 // Initialize Firebase
