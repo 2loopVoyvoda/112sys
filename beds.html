@@ -68,8 +68,25 @@
       background-color: #ff5252;
     }
   </style>
+</head>
+<body>
+  <h1>Свободни спешни легла</h1>
+
+  <button class="filter-button" onclick="filterHospitals()">Покажи само свободни спешни легла</button>
+  <button class="back-button" onclick="goBack()">Обратно</button>
+
+  <table id="hospital-table">
+    <tr>
+      <th>Болница</th>
+      <th>Свободни легла</th>
+    </tr>
+  </table>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="firebase-config.js"></script>
   <script>
-  function filterHospitals() {
+    function filterHospitals() {
       var table = document.getElementById('hospital-table');
       var rows = Array.from(table.rows).slice(1);
       rows.sort(function(a, b) {
@@ -82,17 +99,22 @@
         applyColorCoding(row, index);
       });
     }
-    // JavaScript function to retrieve URL parameters
-    function getParameterByName(name) {
-      name = name.replace(/[\[\]]/g, '\\$&');
-      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-          results = regex.exec(window.location.href);
-      if (!results) return null;
-      if (!results[2]) return '';
-      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+
+    function applyColorCoding(row, index) {
+      var freeBeds = parseInt(row.cells[1].innerText);
+      if (freeBeds <= 0) {
+        row.classList.add('available-beds-red');
+      } else if (freeBeds <= 5) {
+        row.classList.add('available-beds-yellow');
+      } else {
+        row.classList.add('available-beds-green');
+      }
     }
 
-    // JavaScript function to update hospital data based on URL parameters
+    function goBack() {
+      window.history.back();
+    }
+
     function updateHospitalData() {
       var hospitalName = getParameterByName('hospital');
       var freeBeds = getParameterByName('beds');
@@ -111,70 +133,18 @@
       }
     }
 
-    // JavaScript function to apply color coding based on available beds
-    function applyColorCoding(row, index) {
-      var freeBeds = parseInt(row.cells[1].innerText);
-      if (freeBeds <= 0) {
-        row.classList.add('available-beds-red');
-      } else if (freeBeds <= 5) {
-        row.classList.add('available-beds-yellow');
-      } else {
-        row.classList.add('available-beds-green');
-      }
+    function getParameterByName(name) {
+      name = name.replace(/[\[\]]/g, '\\$&');
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+          results = regex.exec(window.location.href);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
     }
 
-    // JavaScript function to go back to the previous page
-    function goBack() {
-      window.history.back();
-    }
-
-    // Call the updateHospitalData function on page load
-    window.addEventListener('load', updateHospitalData);
+    window.addEventListener('DOMContentLoaded', function() {
+      updateHospitalData();
+    });
   </script>
-</head>
-<body>
-  <h1>Свободни спешни легла</h1>
-    <button class="filter-button" onclick="filterHospitals()">Покажи само свободни спешни легла</button>
-  <button class="back-button" onclick="goBack()">Обратно</button>
-  <table id="hospital-table">
-    <tr>
-      <th>Болница</th>
-      <th>Свободни легла</th>
-    </tr>
-    <tr>
-      <td>УМБАЛ „Царица Йоанна-ИСУЛ“ ЕАД</td>
-      <td>10</td>
-    </tr>
-    <tr>
-      <td>УМБАЛСМ „Н. И. Пирогов“ ЕАД</td>
-      <td>5</td>
-    </tr>
-    <tr>
-      <td>УМБАЛ „Александровска“ ЕАД</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>МБАЛ „НКБ“ ЕАД</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>МБАЛНП „Св. Наум“ ЕАД</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>УМБАЛ „Софиямед“ ЕАД</td>
-      <td>12</td>
-    </tr>
-    <tr>
-      <td>МБАЛ „Токуда болница“</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <td>ВМА - МБАЛ София</td>
-      <td>6</td>
-    </tr>
-  </table>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </body>
 </html>

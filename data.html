@@ -102,73 +102,65 @@
     </div>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <button class="back-button" onclick="goBack()">Обратно</button>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="firebase-config.js"></script>
   <script>
-    const options = [
-      "УМБАЛ „Царица Йоанна-ИСУЛ“ ЕАД",
-      "УМБАЛСМ „Н. И. Пирогов“ ЕАД",
-      "УМБАЛ „Александровска“ ЕАД",
-      "МБАЛ „НКБ“ ЕАД",
-      "МБАЛНП „Св. Наум“ ЕАД",
-      "УМБАЛ „Софиямед“ ЕАД",
-      "МБАЛ „Токуда болница“",
-      "ВМА - МБАЛ София"
-    ];
-
-    $(document).ready(function() {
-      const hospitalSearch = document.getElementById("hospitalSearch");
-      const searchResults = document.getElementById("searchResults");
-
-      hospitalSearch.addEventListener("input", function() {
-        const searchText = hospitalSearch.value.trim().toLowerCase();
-        const filteredOptions = options.filter(function(option) {
-          return option.toLowerCase().includes(searchText);
-        });
-        if (searchText === "") {
-          searchResults.style.display = "none";
-        } else {
-          populateResults(filteredOptions);
-          searchResults.style.display = "block";
-        }
-      });
-
-      searchResults.addEventListener("click", function(event) {
-        if (event.target.tagName === "LI") {
-          const selectedHospital = event.target.textContent;
-          hospitalSearch.value = selectedHospital;
-          searchResults.style.display = "none";
-        }
-      });
-    });
-
-    function populateResults(results) {
-      const searchResults = document.getElementById("searchResults");
-      searchResults.innerHTML = "";
-      results.forEach(function(result) {
-        const li = document.createElement("li");
-        li.textContent = result;
-        searchResults.appendChild(li);
-      });
+    // JavaScript function to go back to the previous page
+    function goBack() {
+      window.history.back();
     }
 
-function updateBeds() {
-  var hospitalName = $('#hospitalSearch').val();
-  var freeBeds = $('#freeBeds').val();
+    // JavaScript function to update the bed data
+    function updateBeds() {
+      var hospitalName = document.getElementById('hospitalSearch').value;
+      var freeBeds = document.getElementById('freeBeds').value;
 
-  if (hospitalName && freeBeds) {
-    // Construct the URL with parameters
-    var url = 'beds.html?hospital=' + encodeURIComponent(hospitalName) + '&beds=' + encodeURIComponent(freeBeds);
+      if (hospitalName && freeBeds) {
+        var updates = {};
+        updates[hospitalName] = parseInt(freeBeds);
 
-    // Redirect to the "beds.html" page with the updated data
-    window.location.href = url;
-  } else {
-    alert('Please select a hospital and enter the number of free beds.');
-  }
-}
+        firebase.database().ref('beds').update(updates, function(error) {
+          if (error) {
+            console.log('Data update failed:', error);
+          } else {
+            console.log('Data updated successfully.');
+          }
+        });
+      }
+    }
 
+    // JavaScript function to handle hospital search
+    function searchHospital() {
+      var searchInput = document.getElementById('hospitalSearch').value.toLowerCase();
+      var searchResults = document.getElementById('searchResults');
+      searchResults.innerHTML = '';
+
+      if (searchInput.length > 0) {
+        var hospitalsRef = firebase.database().ref('beds');
+        hospitalsRef.orderByKey().startAt(searchInput).endAt(searchInput + '\uf8ff').limitToFirst(5).once('value', function(snapshot) {
+          snapshot.forEach(function(childSnapshot) {
+            var hospitalName = childSnapshot.key;
+            var li = document.createElement('li');
+            li.textContent = hospitalName;
+            li.onclick = function() {
+              document.getElementById('hospitalSearch').value = hospitalName;
+              searchResults.innerHTML = '';
+            };
+            searchResults.appendChild(li);
+          });
+        });
+
+        searchResults.style.display = 'block';
+      } else {
+        searchResults.style.display = 'none';
+      }
+    }
+
+    // Call the searchHospital function on input change
+    document.getElementById('hospitalSearch').addEventListener('input', searchHospital);
   </script>
-  <button class="back-button" onclick="window.location.href='portal.html'">Back</button>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </body>
 </html>
